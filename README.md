@@ -1,4 +1,4 @@
-![workflow](https://github.com/ferrivbe/serverless-authorizer/actions/workflows/master.yml/badge.svg)
+![workflow](https://github.com/ferrivbe/serverless-authorizer/actions/workflows/main.yml/badge.svg)
 
 # Serverless Authorizer
 
