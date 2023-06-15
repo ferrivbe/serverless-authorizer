@@ -1,0 +1,68 @@
+app: serverless-authorizer
+service: serverless-authorizer
+
+frameworkVersion: "3.29.0"
+
+provider:
+  iam:
+    role:
+      Fn::GetAtt:
+        - ServerlessAuthorizerLambdaExecutionRole
+        - Arn
+  name: aws
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  lambdaHashingVersion: 20201221
+
+package:
+  individually: true
+
+custom:
+  config:
+    default:
+    dev:
+      environment: development
+    stg:
+      environment: staging
+    prd:
+      environment: release
+
+functions:
+  api:
+    handler: handler.handler
+    memorySize: 128
+    timeout: 30
+    runtime: python3.9
+    architecture: arm64
+    description: 'Serverless authorization services API.'
+    package:
+      artifact: api-artifact.zip
+      individually: true
+    environment:
+      REGION: ${self:provider.region}
+      SERVICE_ENVIRONMENT: ${self:provider.stage}
+      CLIENT_ID:
+        Ref: CognitoUserPoolClient
+      CLIENT_SECRET: ${ssm:/aws/reference/secretsmanager//serverless/authorizer/client/credentials}
+      USERPOOL_ID:
+        Ref: CognitoUserPool
+    layers:
+      - Ref: FastapiAuthorizerLambdaLayer
+    events:
+      - httpApi:
+          path: '/{proxy+}'
+          method: '*'
+
+layers:
+  fastapiAuthorizer:
+    package:
+      artifact: fastapi-authorizer-layer-artifact.zip
+    description: The FastAPI authorizer dependencies.
+    compatibleRuntimes:
+      - python3.9
+
+resources:
+  - ${file(./.aws/iam.yml)}
+  - ${file(./.aws/dynamodb.yml)}
+  - ${file(./.aws/cognito.yml)}
+  - ${file(./.aws/secrets.yml)}
