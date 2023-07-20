@@ -95,6 +95,10 @@ class SessionService:
 
         :param token: The user token to be validated.
         """
+        token = token.replace(
+            ServiceConstants.BEARER_PREFIX,
+            ServiceConstants.EMPTY_STRING,
+        )
         try:
             verified_claims: dict = cognitojwt.decode(
                 token,

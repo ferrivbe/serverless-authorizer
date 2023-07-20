@@ -11,6 +11,11 @@ class ServiceConstants:
     str: The authentication result.
     """
 
+    BEARER_PREFIX = "Bearer "
+    """
+    str: The Bearer prefix.
+    """
+
     CODE = "code"
     """
     str: The code.
@@ -36,6 +41,11 @@ class ServiceConstants:
     EMAIL = "email"
     """
     str: The email.
+    """
+
+    EMPTY_STRING = ""
+    """
+    str: The empty string.
     """
 
     EXPIRES_IN = "ExpiresIn"
