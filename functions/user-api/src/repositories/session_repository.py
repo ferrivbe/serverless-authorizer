@@ -1,4 +1,5 @@
 from repositories.extensions.generic import GenericExtensions
+from repositories.environment_repository import EnvironmentRepository
 
 
 class SessionRepository:
@@ -20,6 +21,7 @@ class SessionRepository:
         self.client_id = client_id
         self.client_secret = client_secret
         self.cognito_client = client
+        self.environment_repository = EnvironmentRepository()
 
     def login_user(self, email: str, password: str):
         """
@@ -45,32 +47,32 @@ class SessionRepository:
             },
         )
 
+    def get_username_from_refresh_token(self, refresh_token):
+        response = self.client.list_users(
+            UserPoolId=self.environment_repository.get_userpool_id(),
+            Filter=f"refresh_token='{refresh_token}'",
+        )
+
+        if "Users" in response:
+            users = response["Users"]
+            if len(users) > 0:
+                return users[0]["Username"]
+
+        return None
+
     def refresh_session(self, refresh_token: str):
         """
-        Refreshes a user's session using a refresh token.
+        Logs in a user using a refresh token.
 
-        :param refresh_token: The refresh token to use for session refresh.
+        :param refresh_token: The refresh token of the user.
         :type refresh_token: str
-        :return: The response object containing the refreshed session details.
-        :rtype: object
+        :return: The response object containing the login details.
         """
+        user_id = self.get_username_from_refresh_token(
+            refresh_token=refresh_token,
+        )
 
-        import base64
-        import json
-
-        # Extract the payload from the refresh token
-        payload = refresh_token.split(".")[1]
-
-        # Decode the Base64-encoded payload
-        decoded_payload = base64.b64decode(payload + "===").decode("utf-8")
-
-        # Parse the payload as JSON
-        payload_json = json.loads(decoded_payload)
-
-        # Extract the Cognito username from the payload
-        username = payload_json["username"]
-
-        print("test: " + username)
+        print(user_id)
 
         return self.cognito_client.initiate_auth(
             ClientId=self.client_id,
@@ -78,7 +80,7 @@ class SessionRepository:
             AuthParameters={
                 "REFRESH_TOKEN": refresh_token,
                 "SECRET_HASH": GenericExtensions.get_secret_hash(
-                    "36a18771-da22-4a14-9705-6a66143e0688",
+                    user_id,  # Assuming you have the username stored
                     self.client_id,
                     self.client_secret,
                 ),
