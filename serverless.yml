@@ -23,7 +23,7 @@ package:
 custom:
   config:
     default:
-      app_bucket_name: serverless-authorier-app-${self.provider.stage}
+      app_bucket_name: serverless-authorier-app-${self:provider.stage}
     dev:
       environment: development
     stg:
