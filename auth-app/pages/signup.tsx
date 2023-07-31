@@ -67,7 +67,7 @@ const SignUpScreen: React.FC = () => {
                         priority
                     />
                 </div>
-                <h2 className="signup-heading">Let's Get Started</h2>
+                <h2 className="signup-heading">Welcome!</h2>
                 <form className="signup-form" onSubmit={handleSignUp}>
                     <input
                         type="text"
