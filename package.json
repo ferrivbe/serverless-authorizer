@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ferrivbe/serverless-authorizer#readme",
   "dependencies": {
-    "serverless": "^3.29.0"
+    "serverless": "^3.29.0",
+    "serverless-s3-sync": "^3.0.0"
   }
 }
