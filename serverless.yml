@@ -31,7 +31,7 @@ custom:
     prd:
       environment: release
   s3Sync:
-    - bucketName: ${self:custom.appBucketName}
+    - bucketName: ${self:custom.config.default.app_bucket_name}
       localDir: auth-app/out/
 
 functions:
