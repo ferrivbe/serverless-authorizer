@@ -1,6 +1,6 @@
 import React from "react";
-import "./login.styles.css";
 import Image from 'next/image'
+import "./login.styles.css";
 
 
 const LoginScreen = () => {
