@@ -53,6 +53,11 @@ class ServiceConstants:
     str: The expires in.
     """
 
+    ID_TOKEN = "IdToken"
+    """
+    str: The identification token.
+    """
+
     INVALID_CODE_MESSAGE = "The code '%(code)s' is invalid, is it the latest?."
     """
     str: The invalid code message.

@@ -20,18 +20,18 @@ jobs:
 
       - name: Build API dependencies
         run: |
-          cd $GITHUB_WORKSPACE/functions/user-api/src
+          cd $GITHUB_WORKSPACE/functions/api/src
           mkdir fastapi-authorizer && cd fastapi-authorizer
           pip3 install -r ../requirements.txt -t python/lib/python3.9/site-packages
 
       - name: Build FastAPI layer
         run: |
-          cd $GITHUB_WORKSPACE/functions/user-api/src/fastapi-authorizer
+          cd $GITHUB_WORKSPACE/functions/api/src/fastapi-authorizer
           zip -r $GITHUB_WORKSPACE/fastapi-authorizer-layer-artifact.zip *
 
       - name: Build API
         run: |
-          cd $GITHUB_WORKSPACE/functions/user-api/src
+          cd $GITHUB_WORKSPACE/functions/api/src
           rm requirements.txt
           rm -r fastapi-authorizer
           zip -r $GITHUB_WORKSPACE/api-artifact.zip *

@@ -1,0 +1,64 @@
+/* pages/home.styles.css */
+
+.root {
+  display: flex;
+}
+
+.appBar {
+  background-color: #333;
+  z-index: 1299;
+  transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms, margin 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.appBarShift {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms, margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.menuButton {
+  margin-right: 16px;
+}
+
+.hide {
+  display: none;
+}
+
+.drawer {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.drawerPaper {
+  width: 240px;
+  background: #333;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  min-height: 64px;
+  justify-content: flex-end;
+  color: #fff;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 24px;
+  transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+  margin-left: -240px;
+}
+
+.contentShift {
+  transition: margin 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+  margin-left: 0;
+}
+
+.menuIcon {
+  /* Add your menu icon styles here */
+}
+
+.chevronLeftIcon {
+  /* Add your chevron left icon styles here */
+}

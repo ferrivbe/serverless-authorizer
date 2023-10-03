@@ -48,7 +48,8 @@ class SessionService:
                 )
             elif user.grant_type == SessionGrantType.REFRESH_TOKEN:
                 response = self.repository.refresh_session(
-                    refresh_token=user.refresh_token
+                    refresh_token=user.refresh_token,
+                    id_token=user.id_token,
                 )
 
             return SessionCreated(
@@ -63,6 +64,9 @@ class SessionService:
                 ],
                 refresh_token=response[ServiceConstants.AUTHENTICATION_RESULT].get(
                     ServiceConstants.REFRESH_TOKEN
+                ),
+                id_token=response[ServiceConstants.AUTHENTICATION_RESULT].get(
+                    ServiceConstants.ID_TOKEN
                 ),
             )
 

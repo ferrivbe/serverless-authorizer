@@ -1,5 +1,8 @@
-from repositories.extensions.generic import GenericExtensions
+import requests
+from jose import jwk, jwt
 from repositories.environment_repository import EnvironmentRepository
+from repositories.extensions.generic import GenericExtensions
+from common.exception.http_error import HTTPError
 
 
 class SessionRepository:
@@ -47,32 +50,66 @@ class SessionRepository:
             },
         )
 
-    def get_username_from_refresh_token(self, refresh_token):
-        response = self.client.list_users(
-            UserPoolId=self.environment_repository.get_userpool_id(),
-            Filter=f"refresh_token='{refresh_token}'",
+    def verify_id_token(self, id_token: str) -> dict:
+        """
+        Verifies the identification token and returns its payload.
+
+        :param id_token: The identification token.
+        :type id_token: str
+        :return: Verified token payload or None if verification fails.
+        """
+        header = jwt.get_unverified_header(id_token)
+        region = self.environment_repository.get_region()
+        user_pool_id = self.environment_repository.get_userpool_id()
+
+        jwks_url = f"https://cognito-idp.{region}.amazonaws.com/{user_pool_id}/.well-known/jwks.json"
+        jwks = requests.get(jwks_url).json()
+
+        rsa_key = {}
+        for key in jwks["keys"]:
+            if key["kid"] == header["kid"]:
+                rsa_key = {"kty": key["kty"], "e": key["e"], "n": key["n"]}
+
+        payload = jwt.decode(
+            id_token,
+            rsa_key,
+            algorithms=["RS256"],
+            audience=self.client_id,
+            issuer=f"https://cognito-idp.{region}.amazonaws.com/{user_pool_id}",
         )
+        return payload
 
-        if "Users" in response:
-            users = response["Users"]
-            if len(users) > 0:
-                return users[0]["Username"]
+    def get_username_from_id_token(self, id_token: str) -> str:
+        """
+        Gets username from identification token.
 
-        return None
+        :param id_token: The identification token.
+        :type id_token: str
+        :return: The username.
+        """
+        payload = self.verify_id_token(id_token)
+        if payload and "cognito:username" in payload:
+            return payload["cognito:username"]
+        else:
+            raise HTTPError(
+                404,
+                "InvalidIdToken",
+                "The id token provided is not valid.",
+            )
 
-    def refresh_session(self, refresh_token: str):
+    def refresh_session(self, refresh_token: str, id_token: str):
         """
         Logs in a user using a refresh token.
 
         :param refresh_token: The refresh token of the user.
         :type refresh_token: str
+        :param id_token: The identification token of the user.
+        :type id_token: str
         :return: The response object containing the login details.
         """
-        user_id = self.get_username_from_refresh_token(
-            refresh_token=refresh_token,
+        user_id = self.get_username_from_id_token(
+            id_token=id_token,
         )
-
-        print(user_id)
 
         return self.cognito_client.initiate_auth(
             ClientId=self.client_id,
@@ -80,7 +117,7 @@ class SessionRepository:
             AuthParameters={
                 "REFRESH_TOKEN": refresh_token,
                 "SECRET_HASH": GenericExtensions.get_secret_hash(
-                    user_id,  # Assuming you have the username stored
+                    user_id,
                     self.client_id,
                     self.client_secret,
                 ),
