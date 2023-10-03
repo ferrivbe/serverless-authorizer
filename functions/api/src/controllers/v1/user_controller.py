@@ -18,6 +18,8 @@ service = UserService()
         422: {"model": HTTPErrorDto},
         500: {"model": HTTPErrorDto},
     },
+    response_model=UserCreated,
+    response_model_exclude_none=True,
 )
 async def creates_a_user(user: UserAdd):
     """

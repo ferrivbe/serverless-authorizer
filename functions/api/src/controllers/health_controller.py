@@ -13,6 +13,8 @@ router = APIRouter()
         200: {"model": HealthDto},
         500: {"model": HTTPErrorDto},
     },
+    response_model=HealthDto,
+    response_model_exclude_none=True,
 )
 async def gets_current_health():
     """

@@ -1,4 +1,5 @@
-// pages/home.tsx
+"use-client"
+
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 

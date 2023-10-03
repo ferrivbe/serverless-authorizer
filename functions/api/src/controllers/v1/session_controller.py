@@ -22,6 +22,8 @@ service = SessionService()
         422: {"model": HTTPErrorDto},
         500: {"model": HTTPErrorDto},
     },
+    response_model=SessionCreated,
+    response_model_exclude_none=True,
 )
 async def creates_a_new_session(user: SessionCreate):
     """
@@ -42,6 +44,8 @@ async def creates_a_new_session(user: SessionCreate):
         422: {"model": HTTPErrorDto},
         500: {"model": HTTPErrorDto},
     },
+    response_model=SessionValidated,
+    response_model_exclude_none=True,
 )
 async def validates_the_session(session: SessionValidate):
     """
