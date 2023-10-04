@@ -35,13 +35,6 @@ jobs:
           rm requirements.txt
           rm -r fastapi-authorizer
           zip -r $GITHUB_WORKSPACE/api-artifact.zip *
-
-      - name: Build auth-app
-        run: |
-          cd $GITHUB_WORKSPACE/auth-app
-          npm install
-          npm run build
-
       
       - name: Serverless deployment
         uses: serverless/github-action@v3
