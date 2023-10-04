@@ -14,25 +14,17 @@ provider:
   stage: ${opt:stage, 'dev'}
   lambdaHashingVersion: 20201221
 
-plugins:
-  - serverless-s3-sync
-
 package:
   individually: true
 
 custom:
   config:
-    default:
-      app_bucket_name: serverless-authorier-app-${self:provider.stage}
     dev:
       environment: development
     stg:
       environment: staging
     prd:
       environment: release
-  s3Sync:
-    - bucketName: ${self:custom.config.default.app_bucket_name}
-      localDir: auth-app/out/
 
 functions:
   api:
@@ -74,5 +66,4 @@ resources:
   - ${file(./.aws/dynamodb.yml)}
   - ${file(./.aws/cognito.yml)}
   - ${file(./.aws/secrets.yml)}
-  - ${file(./.aws/s3.yml)}
-  - ${file(./.aws/cloudfront.yml)}
+                    
